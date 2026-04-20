@@ -1,0 +1,14 @@
+name: "internal-academy-code-challange-devcontainer"
+
+services:
+
+    devcontainer:
+        hostname: internal-academy-code-challange-devcontainer
+        container_name: internal-academy-code-challange-devcontainer
+        restart: unless-stopped
+        build:
+            dockerfile: Dockerfile.devcontainer
+        user: ubuntu:ubuntu
+        ports:
+            - '${APP_PORT:-80}:80'
+            - '5173:5173'

@@ -1,0 +1,22 @@
+{
+    "name": "internal-academy-code-challange-devcontainer",
+    "dockerComposeFile": [
+        "docker/docker-compose-dev.yml"
+    ],
+    "service": "devcontainer",
+    "mounts": [
+        "source=/home/${localEnv:USER}/.ssh,target=/home/ubuntu/.ssh,readonly,type=bind,consistency=cached",
+        "source=${localWorkspaceFolder},target=/home/ubuntu/workspace,type=bind,consistency=cached"
+    ],
+    "remoteUser": "ubuntu",
+    "updateRemoteUserUID": false,
+    "overrideCommand": false,
+    "workspaceFolder": "/home/ubuntu/workspace",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "bmewburn.vscode-intelephense-client"
+            ]
+        }
+    }
+}
