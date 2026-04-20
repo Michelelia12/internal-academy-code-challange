@@ -1,9 +1,9 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "micheleelia12/internal-academy-code-challange",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "A platform for managing company workshops and employee registrations — built with Laravel, Vue.js, and Inertia.js.",
+    "keywords": ["Laravel","Vue.js","Inertia.js","Workshop Management","Corporate Training","Event Scheduling","LMS","SaaS","Internal Tool","HR Tech"],
     "license": "MIT",
     "require": {
         "php": "^8.3",
