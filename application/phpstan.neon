@@ -1,0 +1,13 @@
+includes:
+    - phpstan-baseline.neon
+parameters:
+    level: 10
+    paths:
+        - app
+        - tests
+    parallel:
+        jobSize: 8
+        maximumNumberOfProcesses: 8
+    scanDirectories:
+        - app
+        - tests
