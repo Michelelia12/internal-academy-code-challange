@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+(cd application && composer app:quality-checks)
+
+exit 0
