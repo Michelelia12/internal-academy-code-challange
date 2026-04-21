@@ -56,8 +56,34 @@ class UserTest extends TestCase
 
         $this::assertArrayHasKey('email_verified_at', $casts);
         $this::assertArrayHasKey('password', $casts);
+        $this::assertArrayHasKey('is_admin', $casts);
         $this::assertSame('datetime', $casts['email_verified_at']);
         $this::assertSame('hashed', $casts['password']);
+        $this::assertSame('bool', $casts['is_admin']);
+    }
+
+    #[Test]
+    public function it_casts_is_admin_to_bool(): void
+    {
+        $user = User::factory()->make(['is_admin' => 1]);
+
+        $this::assertTrue($user->is_admin);
+    }
+
+    #[Test]
+    public function admin_factory_state_sets_is_admin_true(): void
+    {
+        $user = User::factory()->admin()->make();
+
+        $this::assertTrue($user->is_admin);
+    }
+
+    #[Test]
+    public function employee_factory_state_sets_is_admin_false(): void
+    {
+        $user = User::factory()->employee()->make();
+
+        $this::assertFalse($user->is_admin);
     }
 
     #[Test]
