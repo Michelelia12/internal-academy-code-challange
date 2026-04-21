@@ -13,8 +13,15 @@ export default defineConfig({
         vue(),
     ],
     server: {
+        host: '0.0.0.0',
+        origin: 'http://localhost:5173',
+        cors: { origin: 'http://localhost:8000' },
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
+    },
+    test: {
+        environment: 'jsdom',
+        globals: true,
     },
 });

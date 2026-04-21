@@ -24,7 +24,10 @@ class AuthTest extends TestCase
     #[Test]
     public function login_page_is_accessible_to_guests(): void
     {
-        $this->get('/login')->assertStatus(200);
+        $this->get('/login')
+            ->assertStatus(200)
+            ->assertSee('data-page="app"', false)
+            ->assertSee('"component":"Auth\\/Login"', false);
     }
 
     #[Test]
@@ -89,7 +92,10 @@ class AuthTest extends TestCase
     #[Test]
     public function register_page_is_accessible_to_guests(): void
     {
-        $this->get('/register')->assertStatus(200);
+        $this->get('/register')
+            ->assertStatus(200)
+            ->assertSee('data-page="app"', false)
+            ->assertSee('"component":"Auth\\/Register"', false);
     }
 
     #[Test]
