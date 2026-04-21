@@ -3,6 +3,9 @@
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
          colors="true"
+         requireCoverageMetadata="true"
+         beStrictAboutCoverageMetadata="true"
+         failOnRisky="true"
 >
     <testsuites>
         <testsuite name="Unit">
@@ -16,6 +19,10 @@
         <include>
             <directory>app</directory>
         </include>
+        <exclude>
+            <file>app/Http/Controllers/Controller.php</file>
+            <file>app/Providers/AppServiceProvider.php</file>
+        </exclude>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
