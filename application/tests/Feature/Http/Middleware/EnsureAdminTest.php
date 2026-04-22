@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\Auth;
+namespace Tests\Feature\Http\Middleware;
 
 use App\Http\Middleware\EnsureAdmin;
 use App\Models\User;
@@ -16,7 +16,7 @@ use Tests\TestCase;
 
 #[CoversClass(EnsureAdmin::class)]
 #[UsesClass(User::class)]
-class AdminMiddlewareTest extends TestCase
+class EnsureAdminTest extends TestCase
 {
     use RefreshDatabase;
 
