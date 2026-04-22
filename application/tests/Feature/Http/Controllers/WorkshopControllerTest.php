@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature;
+namespace Tests\Feature\Http\Controllers;
 
 use App\Http\Controllers\WorkshopController;
 use App\Http\Middleware\EnsureAdmin;
@@ -17,12 +17,12 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(WorkshopController::class)]
-#[CoversClass(StoreWorkshopRequest::class)]
-#[CoversClass(UpdateWorkshopRequest::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
 #[UsesClass(EnsureAdmin::class)]
-class WorkshopTest extends TestCase
+#[UsesClass(StoreWorkshopRequest::class)]
+#[UsesClass(UpdateWorkshopRequest::class)]
+class WorkshopControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -106,27 +106,5 @@ class WorkshopTest extends TestCase
     public function guest_is_forbidden_from_accessing_workshop_routes(): void
     {
         $this->get('/workshops')->assertStatus(403);
-    }
-
-    #[Test]
-    public function store_validates_required_fields(): void
-    {
-        /** @var User $admin */
-        $admin = User::factory()->admin()->create();
-
-        $this->actingAs($admin)->post('/workshops', [])
-            ->assertSessionHasErrors(['title', 'description', 'starts_at', 'ends_at', 'capacity']);
-    }
-
-    #[Test]
-    public function update_validates_required_fields(): void
-    {
-        /** @var User $admin */
-        $admin = User::factory()->admin()->create();
-        /** @var Workshop $workshop */
-        $workshop = Workshop::factory()->create();
-
-        $this->actingAs($admin)->put("/workshops/{$workshop->id}", [])
-            ->assertSessionHasErrors(['title', 'description', 'starts_at', 'ends_at', 'capacity']);
     }
 }
