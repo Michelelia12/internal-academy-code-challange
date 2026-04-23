@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
+use App\Events\RegistrationUpdated;
 use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
@@ -28,7 +29,7 @@ class RegistrationController extends Controller
             ->where('workshop_id', $workshop->id);
         $alreadyRegistered = $alreadyRegisteredQuery->first();
 
-        if (! is_null($alreadyRegistered)) {
+        if ($alreadyRegistered !== null) {
             return redirect()->route('dashboard');
         }
 
@@ -63,6 +64,13 @@ class RegistrationController extends Controller
                 ]);
             }
         });
+
+        $confirmedCount = DB::table('registrations')
+            ->where('workshop_id', $workshop->id)
+            ->where('status', RegistrationStatus::Confirmed->value)
+            ->count();
+
+        RegistrationUpdated::dispatch($workshop, $confirmedCount);
 
         return redirect()->route('dashboard');
     }

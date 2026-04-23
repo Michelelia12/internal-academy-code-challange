@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
+use App\Events\RegistrationUpdated;
 use App\Http\Controllers\RegistrationController;
 use App\Models\Registration;
 use App\Models\User;
@@ -19,6 +20,7 @@ use Tests\TestCase;
 #[CoversClass(RegistrationController::class)]
 #[UsesClass(Registration::class)]
 #[UsesClass(RegistrationStatus::class)]
+#[UsesClass(RegistrationUpdated::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
 #[UsesClass(OverlapChecker::class)]
