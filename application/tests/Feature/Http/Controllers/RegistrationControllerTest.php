@@ -9,6 +9,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Services\OverlapChecker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -20,6 +21,7 @@ use Tests\TestCase;
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
+#[UsesClass(OverlapChecker::class)]
 class RegistrationControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -91,6 +93,37 @@ class RegistrationControllerTest extends TestCase
         $this->actingAs($employee)
             ->post("/workshops/{$workshop->id}/registrations");
 
+        $this->assertDatabaseCount('registrations', 1);
+    }
+
+    #[Test]
+    public function employee_cannot_register_for_overlapping_workshop(): void
+    {
+        /** @var User $employee */
+        $employee = User::factory()->employee()->create();
+
+        /** @var Workshop $existing */
+        $existing = Workshop::factory()->create([
+            'starts_at' => '2030-06-01 09:00:00',
+            'ends_at' => '2030-06-01 11:00:00',
+        ]);
+        Registration::create([
+            'user_id' => $employee->id,
+            'workshop_id' => $existing->id,
+            'status' => RegistrationStatus::Confirmed,
+            'position' => null,
+        ]);
+
+        /** @var Workshop $overlapping */
+        $overlapping = Workshop::factory()->create([
+            'starts_at' => '2030-06-01 10:00:00',
+            'ends_at' => '2030-06-01 12:00:00',
+        ]);
+
+        $response = $this->actingAs($employee)
+            ->post("/workshops/{$overlapping->id}/registrations");
+
+        $response->assertStatus(422);
         $this->assertDatabaseCount('registrations', 1);
     }
 

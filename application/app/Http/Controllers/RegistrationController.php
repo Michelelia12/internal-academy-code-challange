@@ -8,12 +8,15 @@ use App\Enums\RegistrationStatus;
 use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Services\OverlapChecker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class RegistrationController extends Controller
 {
+    public function __construct(private readonly OverlapChecker $overlapChecker) {}
+
     public function store(Request $request, Workshop $workshop): RedirectResponse
     {
         $user = $request->user();
@@ -27,6 +30,10 @@ class RegistrationController extends Controller
 
         if (! is_null($alreadyRegistered)) {
             return redirect()->route('dashboard');
+        }
+
+        if ($this->overlapChecker->hasOverlap($user, $workshop)) {
+            abort(422, 'This workshop overlaps with one you are already registered for.');
         }
 
         DB::transaction(function () use ($workshop, $user): void {
