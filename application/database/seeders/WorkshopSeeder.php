@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Database\Seeders;
 
 use App\Enums\RegistrationStatus;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Database\Seeder;
 
 class WorkshopSeeder extends Seeder
@@ -20,7 +20,7 @@ class WorkshopSeeder extends Seeder
         foreach ($fullWorkshops as $workshop) {
             $confirmed = User::factory()->employee()->count(3)->create();
             foreach ($confirmed as $user) {
-                Registration::create([
+                WorkshopRegistration::create([
                     'user_id' => $user->id,
                     'workshop_id' => $workshop->id,
                     'status' => RegistrationStatus::Confirmed,
@@ -31,7 +31,7 @@ class WorkshopSeeder extends Seeder
             $waiting = User::factory()->employee()->count(2)->create();
             $position = 1;
             foreach ($waiting as $user) {
-                Registration::create([
+                WorkshopRegistration::create([
                     'user_id' => $user->id,
                     'workshop_id' => $workshop->id,
                     'status' => RegistrationStatus::Waiting,

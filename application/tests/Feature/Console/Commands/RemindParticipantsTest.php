@@ -7,9 +7,9 @@ namespace Tests\Feature\Console\Commands;
 use App\Console\Commands\RemindParticipants;
 use App\Enums\RegistrationStatus;
 use App\Mail\WorkshopReminder;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -19,7 +19,7 @@ use Tests\TestCase;
 
 #[CoversClass(RemindParticipants::class)]
 #[CoversClass(WorkshopReminder::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
@@ -39,7 +39,7 @@ class RemindParticipantsTest extends TestCase
             'starts_at' => now()->addDay()->startOfDay()->addHours(10),
             'ends_at' => now()->addDay()->startOfDay()->addHours(12),
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $employee->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Confirmed,
@@ -65,7 +65,7 @@ class RemindParticipantsTest extends TestCase
             'starts_at' => now()->subDay()->startOfDay()->addHours(10),
             'ends_at' => now()->subDay()->startOfDay()->addHours(12),
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $employee->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Confirmed,
@@ -89,7 +89,7 @@ class RemindParticipantsTest extends TestCase
             'starts_at' => now()->addDays(2)->startOfDay()->addHours(10),
             'ends_at' => now()->addDays(2)->startOfDay()->addHours(12),
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $employee->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Confirmed,
@@ -113,7 +113,7 @@ class RemindParticipantsTest extends TestCase
             'starts_at' => now()->addDay()->startOfDay()->addHours(10),
             'ends_at' => now()->addDay()->startOfDay()->addHours(12),
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $employee->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Waiting,
@@ -144,7 +144,7 @@ class RemindParticipantsTest extends TestCase
         $u3 = User::factory()->employee()->create();
 
         foreach ([$u1, $u2, $u3] as $user) {
-            Registration::create([
+            WorkshopRegistration::create([
                 'user_id' => $user->id,
                 'workshop_id' => $workshop->id,
                 'status' => RegistrationStatus::Confirmed,

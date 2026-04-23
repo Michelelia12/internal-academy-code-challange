@@ -14,8 +14,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property-read Workshop $workshop
  */
 #[Fillable(['user_id', 'workshop_id', 'status', 'position'])]
-class Registration extends Model
+class WorkshopRegistration extends Model
 {
+    protected $table = 'registrations';
+
     /**
      * @return array<string, string>
      */

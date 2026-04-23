@@ -33,10 +33,10 @@ class Workshop extends Model
         ];
     }
 
-    /** @return HasMany<Registration, $this> */
+    /** @return HasMany<WorkshopRegistration, $this> */
     public function registrations(): HasMany
     {
-        return $this->hasMany(Registration::class);
+        return $this->hasMany(WorkshopRegistration::class);
     }
 
     /**

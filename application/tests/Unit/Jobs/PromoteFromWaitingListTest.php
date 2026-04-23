@@ -7,9 +7,9 @@ namespace Tests\Unit\Jobs;
 use App\Enums\RegistrationStatus;
 use App\Jobs\PromoteFromWaitingList;
 use App\Mail\WaitingListPromotion;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Queue;
@@ -20,7 +20,7 @@ use Tests\TestCase;
 
 #[CoversClass(PromoteFromWaitingList::class)]
 #[CoversClass(WaitingListPromotion::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
@@ -41,13 +41,13 @@ class PromoteFromWaitingListTest extends TestCase
         /** @var Workshop $workshop */
         $workshop = Workshop::factory()->create(['capacity' => 1]);
 
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $other->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Confirmed,
             'position' => null,
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $user->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Waiting,
@@ -82,13 +82,13 @@ class PromoteFromWaitingListTest extends TestCase
         /** @var Workshop $workshop */
         $workshop = Workshop::factory()->create(['capacity' => 0]);
 
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $second->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Waiting,
             'position' => 2,
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $first->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Waiting,
@@ -133,7 +133,7 @@ class PromoteFromWaitingListTest extends TestCase
         /** @var Workshop $workshop */
         $workshop = Workshop::factory()->create(['capacity' => 0]);
 
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $user->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Waiting,

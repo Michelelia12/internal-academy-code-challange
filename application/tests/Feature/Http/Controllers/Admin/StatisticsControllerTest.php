@@ -7,9 +7,9 @@ namespace Tests\Feature\Http\Controllers\Admin;
 use App\Enums\RegistrationStatus;
 use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Middleware\EnsureAdmin;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -18,7 +18,7 @@ use Tests\TestCase;
 
 #[CoversClass(StatisticsController::class)]
 #[UsesClass(EnsureAdmin::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
@@ -42,9 +42,9 @@ class StatisticsControllerTest extends TestCase
         /** @var User $u3 */
         $u3 = User::factory()->employee()->create();
 
-        Registration::create(['user_id' => $u1->id, 'workshop_id' => $popular->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
-        Registration::create(['user_id' => $u2->id, 'workshop_id' => $popular->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
-        Registration::create(['user_id' => $u3->id, 'workshop_id' => $other->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
+        WorkshopRegistration::create(['user_id' => $u1->id, 'workshop_id' => $popular->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
+        WorkshopRegistration::create(['user_id' => $u2->id, 'workshop_id' => $popular->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
+        WorkshopRegistration::create(['user_id' => $u3->id, 'workshop_id' => $other->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
 
         $this->actingAs($admin)->get('/admin/statistics')
             ->assertStatus(200)
@@ -65,9 +65,9 @@ class StatisticsControllerTest extends TestCase
         /** @var User $u3 */
         $u3 = User::factory()->employee()->create();
 
-        Registration::create(['user_id' => $u1->id, 'workshop_id' => $workshop->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
-        Registration::create(['user_id' => $u2->id, 'workshop_id' => $workshop->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
-        Registration::create(['user_id' => $u3->id, 'workshop_id' => $workshop->id, 'status' => RegistrationStatus::Waiting, 'position' => 1]);
+        WorkshopRegistration::create(['user_id' => $u1->id, 'workshop_id' => $workshop->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
+        WorkshopRegistration::create(['user_id' => $u2->id, 'workshop_id' => $workshop->id, 'status' => RegistrationStatus::Confirmed, 'position' => null]);
+        WorkshopRegistration::create(['user_id' => $u3->id, 'workshop_id' => $workshop->id, 'status' => RegistrationStatus::Waiting, 'position' => 1]);
 
         $this->actingAs($admin)->get('/admin/statistics')
             ->assertStatus(200)

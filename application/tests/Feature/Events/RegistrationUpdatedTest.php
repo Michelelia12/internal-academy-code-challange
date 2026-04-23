@@ -7,9 +7,9 @@ namespace Tests\Feature\Events;
 use App\Enums\RegistrationStatus;
 use App\Events\RegistrationUpdated;
 use App\Http\Controllers\RegistrationController;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use App\Services\OverlapChecker;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,7 +21,7 @@ use Tests\TestCase;
 
 #[CoversClass(RegistrationUpdated::class)]
 #[UsesClass(RegistrationController::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]

@@ -6,8 +6,8 @@ namespace App\Jobs;
 
 use App\Enums\RegistrationStatus;
 use App\Mail\WaitingListPromotion;
-use App\Models\Registration;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -23,22 +23,22 @@ class PromoteFromWaitingList implements ShouldQueue
 
     public function handle(): void
     {
-        /** @var Registration|null $registration */
-        $registration = Registration::where('workshop_id', $this->workshop->id)
+        /** @var WorkshopRegistration|null $workshopRegistration */
+        $workshopRegistration = WorkshopRegistration::where('workshop_id', $this->workshop->id)
             ->where('status', RegistrationStatus::Waiting->value)
             ->get()
             ->sortBy('position')
             ->first();
 
-        if ($registration === null) {
+        if ($workshopRegistration === null) {
             return;
         }
 
-        $registration->update([
+        $workshopRegistration->update([
             'status' => RegistrationStatus::Confirmed,
             'position' => null,
         ]);
 
-        Mail::to($registration->user)->send(new WaitingListPromotion($registration->user, $this->workshop));
+        Mail::to($workshopRegistration->user)->send(new WaitingListPromotion($workshopRegistration->user, $this->workshop));
     }
 }

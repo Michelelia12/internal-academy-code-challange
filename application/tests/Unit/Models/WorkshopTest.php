@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
-use App\Models\Registration;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -15,7 +15,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(Workshop::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 class WorkshopTest extends TestCase
 {
     use RefreshDatabase;

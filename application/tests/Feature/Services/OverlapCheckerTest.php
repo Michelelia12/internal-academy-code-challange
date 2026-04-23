@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Feature\Services;
 
 use App\Enums\RegistrationStatus;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use App\Services\OverlapChecker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -16,7 +16,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(OverlapChecker::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
@@ -42,7 +42,7 @@ class OverlapCheckerTest extends TestCase
             'starts_at' => '2030-06-01 09:00:00',
             'ends_at' => '2030-06-01 11:00:00',
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $user->id,
             'workshop_id' => $existing->id,
             'status' => RegistrationStatus::Confirmed,
@@ -68,7 +68,7 @@ class OverlapCheckerTest extends TestCase
             'starts_at' => '2030-06-01 09:00:00',
             'ends_at' => '2030-06-01 11:00:00',
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $user->id,
             'workshop_id' => $existing->id,
             'status' => RegistrationStatus::Confirmed,
@@ -108,7 +108,7 @@ class OverlapCheckerTest extends TestCase
             'starts_at' => '2030-06-01 09:00:00',
             'ends_at' => '2030-06-01 11:00:00',
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $user->id,
             'workshop_id' => $existing->id,
             'status' => RegistrationStatus::Waiting,

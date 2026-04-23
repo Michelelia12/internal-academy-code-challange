@@ -7,9 +7,9 @@ namespace Tests\Feature\Http\Controllers;
 use App\Enums\RegistrationStatus;
 use App\Events\RegistrationUpdated;
 use App\Http\Controllers\RegistrationController;
-use App\Models\Registration;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use App\Services\OverlapChecker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -18,7 +18,7 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(RegistrationController::class)]
-#[UsesClass(Registration::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(RegistrationUpdated::class)]
 #[UsesClass(User::class)]
@@ -58,7 +58,7 @@ class RegistrationControllerTest extends TestCase
         /** @var Workshop $workshop */
         $workshop = Workshop::factory()->create(['capacity' => 1]);
 
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $other->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Confirmed,
@@ -85,7 +85,7 @@ class RegistrationControllerTest extends TestCase
         /** @var Workshop $workshop */
         $workshop = Workshop::factory()->create(['capacity' => 5]);
 
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $employee->id,
             'workshop_id' => $workshop->id,
             'status' => RegistrationStatus::Confirmed,
@@ -109,7 +109,7 @@ class RegistrationControllerTest extends TestCase
             'starts_at' => '2030-06-01 09:00:00',
             'ends_at' => '2030-06-01 11:00:00',
         ]);
-        Registration::create([
+        WorkshopRegistration::create([
             'user_id' => $employee->id,
             'workshop_id' => $existing->id,
             'status' => RegistrationStatus::Confirmed,
