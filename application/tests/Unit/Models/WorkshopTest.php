@@ -4,14 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Models;
 
+use App\Models\Registration;
 use App\Models\Workshop;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(Workshop::class)]
+#[UsesClass(Registration::class)]
 class WorkshopTest extends TestCase
 {
     use RefreshDatabase;
@@ -70,5 +74,13 @@ class WorkshopTest extends TestCase
         $workshop->confirmed_registrations_count = 10;
 
         $this::assertSame(0, $workshop->available_seats);
+    }
+
+    #[Test]
+    public function it_has_a_registrations_relation(): void
+    {
+        $workshop = new Workshop;
+
+        $this::assertInstanceOf(HasMany::class, $workshop->registrations());
     }
 }

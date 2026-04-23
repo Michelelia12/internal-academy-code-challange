@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use App\Http\Controllers\Admin\StatisticsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\WorkshopController;
@@ -20,3 +21,7 @@ Route::resource('workshops', WorkshopController::class)
 Route::post('/workshops/{workshop}/registrations', [RegistrationController::class, 'store'])
     ->middleware('auth')
     ->name('workshops.registrations.store');
+
+Route::get('/admin/statistics', [StatisticsController::class, 'index'])
+    ->middleware('admin')
+    ->name('admin.statistics');
