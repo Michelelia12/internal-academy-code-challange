@@ -9,6 +9,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property-read User $user
+ * @property-read Workshop $workshop
+ */
 #[Fillable(['user_id', 'workshop_id', 'status', 'position'])]
 class Registration extends Model
 {
