@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Database\Seeders;
 
+use App\Enums\RegistrationStatus;
+use App\Models\Registration;
+use App\Models\User;
 use App\Models\Workshop;
 use Illuminate\Database\Seeder;
 
@@ -11,9 +14,33 @@ class WorkshopSeeder extends Seeder
 {
     public function run(): void
     {
-        Workshop::factory()->count(10)->create();
+        // 3 full workshops (capacity 3) with confirmed registrations and a waiting list
+        $fullWorkshops = Workshop::factory()->count(3)->create(['capacity' => 3]);
 
-        // TODO(task-4.x): once Registration model exists, seed full workshops
-        // with confirmed + waiting registrations here.
+        foreach ($fullWorkshops as $workshop) {
+            $confirmed = User::factory()->employee()->count(3)->create();
+            foreach ($confirmed as $user) {
+                Registration::create([
+                    'user_id' => $user->id,
+                    'workshop_id' => $workshop->id,
+                    'status' => RegistrationStatus::Confirmed,
+                    'position' => null,
+                ]);
+            }
+
+            $waiting = User::factory()->employee()->count(2)->create();
+            $position = 1;
+            foreach ($waiting as $user) {
+                Registration::create([
+                    'user_id' => $user->id,
+                    'workshop_id' => $workshop->id,
+                    'status' => RegistrationStatus::Waiting,
+                    'position' => $position++,
+                ]);
+            }
+        }
+
+        // 7 empty upcoming workshops with random capacity
+        Workshop::factory()->count(7)->create();
     }
 }
