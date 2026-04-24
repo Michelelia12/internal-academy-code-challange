@@ -5,10 +5,6 @@ const props = defineProps({
     workshops: Array,
 });
 
-function registerForm(workshop) {
-    return useForm({});
-}
-
 function register(workshop) {
     useForm({}).post(`/workshops/${workshop.id}/registrations`);
 }
