@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Http\Controllers;
 
+use App\Enums\RegistrationStatus;
 use App\Http\Controllers\DashboardController;
 use App\Models\User;
 use App\Models\Workshop;
+use App\Models\WorkshopRegistration;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -14,8 +16,10 @@ use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(DashboardController::class)]
+#[UsesClass(RegistrationStatus::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
+#[UsesClass(WorkshopRegistration::class)]
 class DashboardControllerTest extends TestCase
 {
     use RefreshDatabase;
@@ -82,5 +86,33 @@ class DashboardControllerTest extends TestCase
     public function guest_is_redirected_to_login(): void
     {
         $this->get('/dashboard')->assertRedirect('/login');
+    }
+
+    #[Test]
+    public function available_seats_reflects_confirmed_registrations_in_response(): void
+    {
+        /** @var User $employee */
+        $employee = User::factory()->employee()->create();
+
+        /** @var Workshop $workshop */
+        $workshop = Workshop::factory()->create([
+            'starts_at' => now()->addDays(7),
+            'ends_at' => now()->addDays(7)->addHours(2),
+            'capacity' => 5,
+        ]);
+
+        /** @var User $registrant */
+        $registrant = User::factory()->employee()->create();
+
+        WorkshopRegistration::create([
+            'user_id' => $registrant->id,
+            'workshop_id' => $workshop->id,
+            'status' => RegistrationStatus::Confirmed,
+            'position' => null,
+        ]);
+
+        $this->actingAs($employee)->get('/dashboard')
+            ->assertStatus(200)
+            ->assertSee('"available_seats":4', false);
     }
 }

@@ -21,6 +21,9 @@ class Workshop extends Model
     /** @use HasFactory<WorkshopFactory> */
     use HasFactory;
 
+    /** @var list<string> */
+    protected $appends = ['available_seats'];
+
     /**
      * @return array<string, string>
      */
