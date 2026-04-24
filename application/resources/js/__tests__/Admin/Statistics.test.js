@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => {
 
 vi.mock('@inertiajs/vue3', () => ({
     router: { reload: mocks.mockReload },
+    usePage: () => ({ props: { auth: { user: { name: 'Test', is_admin: false } } } }),
 }));
 
 describe('Admin/Statistics.vue', () => {

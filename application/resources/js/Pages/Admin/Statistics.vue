@@ -1,6 +1,9 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
 import { router } from '@inertiajs/vue3';
+import AppLayout from '../../Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 
 const props = defineProps({
     most_popular: Object,

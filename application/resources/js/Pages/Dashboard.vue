@@ -1,5 +1,8 @@
 <script setup>
 import { useForm } from '@inertiajs/vue3';
+import AppLayout from '../Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 
 const props = defineProps({
     workshops: Array,
@@ -28,6 +31,7 @@ function register(workshop) {
                     <div class="flex items-start justify-between gap-4">
                         <div class="min-w-0 flex-1">
                             <h2 class="text-lg font-semibold text-gray-900">{{ workshop.title }}</h2>
+                            <small>ID: {{ workshop.id }}</small>
                             <p class="mt-1 text-sm text-gray-600">{{ workshop.description }}</p>
 
                             <div class="mt-3 flex flex-wrap gap-4 text-sm text-gray-500">

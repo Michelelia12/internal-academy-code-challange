@@ -39,6 +39,7 @@ const mocks = vi.hoisted(() => {
 vi.mock('@inertiajs/vue3', () => ({
     useForm: mocks.useForm,
     router: { delete: mocks.mockDelete },
+    usePage: () => ({ props: { auth: { user: { name: 'Test', is_admin: false } } } }),
 }));
 
 const makeWorkshop = (overrides = {}) => ({

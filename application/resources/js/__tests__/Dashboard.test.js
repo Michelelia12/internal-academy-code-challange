@@ -6,6 +6,7 @@ const mockPost = vi.fn();
 
 vi.mock('@inertiajs/vue3', () => ({
     useForm: () => ({ post: mockPost }),
+    usePage: () => ({ props: { auth: { user: { name: 'Test', is_admin: false } } } }),
 }));
 
 const makeWorkshop = (overrides = {}) => ({

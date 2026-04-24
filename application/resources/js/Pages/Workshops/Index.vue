@@ -1,6 +1,9 @@
 <script setup>
 import { ref } from 'vue';
 import { useForm, router } from '@inertiajs/vue3';
+import AppLayout from '../../Layouts/AppLayout.vue';
+
+defineOptions({ layout: AppLayout });
 
 const props = defineProps({
     workshops: Array,
