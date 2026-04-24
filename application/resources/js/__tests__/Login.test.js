@@ -8,7 +8,7 @@ const mockForm = {
     password: '',
     errors: {},
     processing: false,
-    post: vi.fn(),
+    post: vi.fn((url, opts) => opts?.onFinish?.()),
     reset: vi.fn(),
 };
 
@@ -75,5 +75,15 @@ describe('Login.vue', () => {
 
         const link = wrapper.find('a[href="/register"]');
         expect(link.exists()).toBe(true);
+    });
+
+    it('updates form fields via v-model and calls onFinish after submit', async () => {
+        const wrapper = mount(Login);
+
+        await wrapper.find('input[type="email"]').setValue('a@b.com');
+        await wrapper.find('input[type="password"]').setValue('secret');
+        await wrapper.find('form').trigger('submit');
+
+        expect(mockForm.reset).toHaveBeenCalledWith('password');
     });
 });

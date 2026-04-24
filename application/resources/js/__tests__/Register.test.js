@@ -9,7 +9,7 @@ const mockForm = {
     password_confirmation: '',
     errors: {},
     processing: false,
-    post: vi.fn(),
+    post: vi.fn((url, opts) => opts?.onFinish?.()),
     reset: vi.fn(),
 };
 
@@ -87,5 +87,17 @@ describe('Register.vue', () => {
 
         const link = wrapper.find('a[href="/login"]');
         expect(link.exists()).toBe(true);
+    });
+
+    it('updates form fields via v-model and calls onFinish after submit', async () => {
+        const wrapper = mount(Register);
+
+        await wrapper.find('input#name').setValue('Alice');
+        await wrapper.find('input#email').setValue('a@b.com');
+        await wrapper.find('input#password').setValue('secret');
+        await wrapper.find('input#password_confirmation').setValue('secret');
+        await wrapper.find('form').trigger('submit');
+
+        expect(mockForm.reset).toHaveBeenCalledWith('password', 'password_confirmation');
     });
 });

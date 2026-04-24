@@ -285,7 +285,7 @@ Then open [http://localhost:8000](http://localhost:8000) in your browser.
 ## Running Tests
 
 ```bash
-# Run the full test suite
+# Run the full PHP test suite
 php artisan test
 
 # Run with coverage report
@@ -296,9 +296,12 @@ php artisan test --testsuite=Unit
 
 # Run only feature tests
 php artisan test --testsuite=Feature
+
+# Run the frontend test suite (Vitest, with coverage)
+npm test
 ```
 
-The test suite covers:
+The PHP test suite covers:
 
 - Workshop CRUD (admin only)
 - Registration and cancellation flows
@@ -401,7 +404,7 @@ chore(seed): add DatabaseSeeder with users and workshops
 chore(deps): update laravel/framework to 13.x
 ```
 
-A pre-commit hook runs `composer app:quality-checks` (PHPStan + full test suite + strict-types check) before every commit. A commit is rejected if any check fails, so every commit in the history is guaranteed to be green.
+A pre-commit hook runs `composer app:quality-checks` (PHPStan + full PHP test suite + strict-types check) followed by `npm test` (Vitest with 100% coverage threshold) before every commit. A commit is rejected if any check fails, so every commit in the history is guaranteed to be green.
 
 ---
 

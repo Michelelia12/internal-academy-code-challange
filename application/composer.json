@@ -42,7 +42,8 @@
             "php artisan test --parallel --coverage --min=100",
             "vendor/bin/pint --test --parallel",
             ".qualitychecks/enforce-strict-types app tests routes database",
-            "composer validate"
+            "composer validate",
+            "npm run test"
     ]
     },
     "extra": {
