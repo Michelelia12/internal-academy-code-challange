@@ -1,6 +1,7 @@
 <script setup>
 import { router, useForm } from '@inertiajs/vue3';
 import AppLayout from '../Layouts/AppLayout.vue';
+import { useToast } from '../composables/useToast.js';
 
 defineOptions({ layout: AppLayout });
 
@@ -8,8 +9,17 @@ const props = defineProps({
     workshops: Array,
 });
 
+const { show } = useToast();
+
 function register(workshop) {
-    useForm({}).post(`/workshops/${workshop.id}/registrations`, { preserveScroll: true });
+    useForm({}).post(`/workshops/${workshop.id}/registrations`, {
+        preserveScroll: true,
+        onError: (errors) => {
+            if (errors.overlap) {
+                show(errors.overlap);
+            }
+        },
+    });
 }
 
 function unregister(workshop) {

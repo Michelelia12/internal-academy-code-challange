@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Dashboard from '../Pages/Dashboard.vue';
+import { useToast } from '../composables/useToast.js';
 
 const mockPost = vi.fn();
 const mockDelete = vi.fn();
@@ -27,6 +28,7 @@ describe('Dashboard.vue', () => {
     beforeEach(() => {
         mockPost.mockClear();
         mockDelete.mockClear();
+        useToast().hide();
     });
 
     it('renders workshop titles and descriptions', () => {
@@ -75,7 +77,7 @@ describe('Dashboard.vue', () => {
         await wrapper.find('button').trigger('click');
 
         expect(mockPost).toHaveBeenCalledOnce();
-        expect(mockPost).toHaveBeenCalledWith('/workshops/42/registrations',{ preserveScroll: true });
+        expect(mockPost).toHaveBeenCalledWith('/workshops/42/registrations', expect.objectContaining({ preserveScroll: true }));
     });
 
     it('calls useForm().post with the correct URL when Join Waiting List is clicked', async () => {
@@ -85,7 +87,7 @@ describe('Dashboard.vue', () => {
         await wrapper.find('button').trigger('click');
 
         expect(mockPost).toHaveBeenCalledOnce();
-        expect(mockPost).toHaveBeenCalledWith('/workshops/7/registrations',{ preserveScroll: true });
+        expect(mockPost).toHaveBeenCalledWith('/workshops/7/registrations', expect.objectContaining({ preserveScroll: true }));
     });
 
     it('shows Confirmed badge and Unregister button when user has a confirmed registration', () => {
@@ -141,5 +143,27 @@ describe('Dashboard.vue', () => {
 
         expect(wrapper.text()).toContain('8 / 8');
         expect(wrapper.findAll('button').some(b => b.text() === 'Register')).toBe(true);
+    });
+
+    it('shows the overlap toast when onError receives an overlap error', async () => {
+        const wrapper = mount(Dashboard, { props: { workshops: [makeWorkshop({ id: 42 })] } });
+        await wrapper.find('button').trigger('click');
+
+        const { onError } = mockPost.mock.calls[0][1];
+        onError({ overlap: 'This workshop overlaps with one you are already registered for.' });
+
+        const { visible, message } = useToast();
+        expect(visible.value).toBe(true);
+        expect(message.value).toBe('This workshop overlaps with one you are already registered for.');
+    });
+
+    it('does not show the toast when onError receives a non-overlap error', async () => {
+        const wrapper = mount(Dashboard, { props: { workshops: [makeWorkshop({ id: 42 })] } });
+        await wrapper.find('button').trigger('click');
+
+        const { onError } = mockPost.mock.calls[0][1];
+        onError({ other: 'Some other error' });
+
+        expect(useToast().visible.value).toBe(false);
     });
 });
