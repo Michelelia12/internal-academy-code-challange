@@ -35,7 +35,7 @@ class RegistrationController extends Controller
         }
 
         if ($this->overlapChecker->hasOverlap($user, $workshop)) {
-            abort(422, 'This workshop overlaps with one you are already registered for.');
+            return redirect()->back()->withErrors(['overlap' => 'This workshop overlaps with one you are already registered for.']);
         }
 
         DB::transaction(function () use ($workshop, $user): void {

@@ -128,7 +128,8 @@ class RegistrationControllerTest extends TestCase
         $response = $this->actingAs($employee)
             ->post("/workshops/{$overlapping->id}/registrations");
 
-        $response->assertStatus(422);
+        $response->assertRedirect();
+        $response->assertSessionHasErrors(['overlap']);
         $this->assertDatabaseCount('registrations', 1);
     }
 
