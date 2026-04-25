@@ -75,7 +75,7 @@ describe('Dashboard.vue', () => {
         await wrapper.find('button').trigger('click');
 
         expect(mockPost).toHaveBeenCalledOnce();
-        expect(mockPost).toHaveBeenCalledWith('/workshops/42/registrations');
+        expect(mockPost).toHaveBeenCalledWith('/workshops/42/registrations',{ preserveScroll: true });
     });
 
     it('calls useForm().post with the correct URL when Join Waiting List is clicked', async () => {
@@ -85,7 +85,7 @@ describe('Dashboard.vue', () => {
         await wrapper.find('button').trigger('click');
 
         expect(mockPost).toHaveBeenCalledOnce();
-        expect(mockPost).toHaveBeenCalledWith('/workshops/7/registrations');
+        expect(mockPost).toHaveBeenCalledWith('/workshops/7/registrations',{ preserveScroll: true });
     });
 
     it('shows Confirmed badge and Unregister button when user has a confirmed registration', () => {
@@ -117,7 +117,7 @@ describe('Dashboard.vue', () => {
         await wrapper.find('button').trigger('click');
 
         expect(mockDelete).toHaveBeenCalledOnce();
-        expect(mockDelete).toHaveBeenCalledWith('/workshops/5/registrations');
+        expect(mockDelete).toHaveBeenCalledWith('/workshops/5/registrations', { preserveScroll: true });
     });
 
     it('shows Register and Join Waiting List buttons when user_registration is null', () => {

@@ -9,11 +9,11 @@ const props = defineProps({
 });
 
 function register(workshop) {
-    useForm({}).post(`/workshops/${workshop.id}/registrations`);
+    useForm({}).post(`/workshops/${workshop.id}/registrations`, { preserveScroll: true });
 }
 
 function unregister(workshop) {
-    router.delete(`/workshops/${workshop.id}/registrations`);
+    router.delete(`/workshops/${workshop.id}/registrations`, { preserveScroll: true });
 }
 </script>
 
