@@ -1,5 +1,6 @@
 <script setup>
 import AppNav from '../Components/AppNav.vue';
+import ToastNotification from '../Components/ToastNotification.vue';
 </script>
 
 <template>
@@ -8,5 +9,6 @@ import AppNav from '../Components/AppNav.vue';
         <main>
             <slot />
         </main>
+        <ToastNotification />
     </div>
 </template>
