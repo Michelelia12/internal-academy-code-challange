@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { router, useForm } from '@inertiajs/vue3';
 import AppLayout from '../Layouts/AppLayout.vue';
 
 defineOptions({ layout: AppLayout });
@@ -10,6 +10,10 @@ const props = defineProps({
 
 function register(workshop) {
     useForm({}).post(`/workshops/${workshop.id}/registrations`);
+}
+
+function unregister(workshop) {
+    router.delete(`/workshops/${workshop.id}/registrations`);
 }
 </script>
 
@@ -50,21 +54,43 @@ function register(workshop) {
                             </div>
                         </div>
 
-                        <div class="shrink-0">
-                            <button
-                                v-if="(workshop.available_seats ?? workshop.capacity) > 0"
-                                @click="register(workshop)"
-                                class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
-                            >
-                                Register
-                            </button>
-                            <button
-                                v-else
-                                @click="register(workshop)"
-                                class="rounded bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
-                            >
-                                Join Waiting List
-                            </button>
+                        <div class="flex shrink-0 flex-col items-end gap-2">
+                            <template v-if="workshop.user_registration">
+                                <span
+                                    v-if="workshop.user_registration.status === 'confirmed'"
+                                    class="inline-block rounded bg-green-100 px-3 py-1 text-sm font-medium text-green-800"
+                                >
+                                    Confirmed
+                                </span>
+                                <span
+                                    v-else
+                                    class="inline-block rounded bg-amber-100 px-3 py-1 text-sm font-medium text-amber-800"
+                                >
+                                    Waiting List
+                                </span>
+                                <button
+                                    @click="unregister(workshop)"
+                                    class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
+                                >
+                                    Unregister
+                                </button>
+                            </template>
+                            <template v-else>
+                                <button
+                                    v-if="(workshop.available_seats ?? workshop.capacity) > 0"
+                                    @click="register(workshop)"
+                                    class="rounded bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
+                                >
+                                    Register
+                                </button>
+                                <button
+                                    v-else
+                                    @click="register(workshop)"
+                                    class="rounded bg-amber-500 px-4 py-2 text-sm font-medium text-white hover:bg-amber-600"
+                                >
+                                    Join Waiting List
+                                </button>
+                            </template>
                         </div>
                     </div>
                 </div>

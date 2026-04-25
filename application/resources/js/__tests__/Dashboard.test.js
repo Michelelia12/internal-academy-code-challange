@@ -3,10 +3,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import Dashboard from '../Pages/Dashboard.vue';
 
 const mockPost = vi.fn();
+const mockDelete = vi.fn();
 
 vi.mock('@inertiajs/vue3', () => ({
     useForm: () => ({ post: mockPost }),
     usePage: () => ({ props: { auth: { user: { name: 'Test', is_admin: false } } } }),
+    router: { delete: (...args) => mockDelete(...args) },
 }));
 
 const makeWorkshop = (overrides = {}) => ({
@@ -17,12 +19,14 @@ const makeWorkshop = (overrides = {}) => ({
     ends_at: '2026-05-02',
     capacity: 10,
     available_seats: 5,
+    user_registration: null,
     ...overrides,
 });
 
 describe('Dashboard.vue', () => {
     beforeEach(() => {
         mockPost.mockClear();
+        mockDelete.mockClear();
     });
 
     it('renders workshop titles and descriptions', () => {
@@ -82,6 +86,52 @@ describe('Dashboard.vue', () => {
 
         expect(mockPost).toHaveBeenCalledOnce();
         expect(mockPost).toHaveBeenCalledWith('/workshops/7/registrations');
+    });
+
+    it('shows Confirmed badge and Unregister button when user has a confirmed registration', () => {
+        const wrapper = mount(Dashboard, {
+            props: { workshops: [makeWorkshop({ user_registration: { status: 'confirmed' } })] },
+        });
+
+        expect(wrapper.text()).toContain('Confirmed');
+        expect(wrapper.findAll('button').some(b => b.text() === 'Unregister')).toBe(true);
+        expect(wrapper.findAll('button').some(b => b.text() === 'Register')).toBe(false);
+        expect(wrapper.findAll('button').some(b => b.text() === 'Join Waiting List')).toBe(false);
+    });
+
+    it('shows Waiting List badge and Unregister button when user is on the waiting list', () => {
+        const wrapper = mount(Dashboard, {
+            props: { workshops: [makeWorkshop({ available_seats: 0, user_registration: { status: 'waiting' } })] },
+        });
+
+        expect(wrapper.text()).toContain('Waiting List');
+        expect(wrapper.findAll('button').some(b => b.text() === 'Unregister')).toBe(true);
+        expect(wrapper.findAll('button').some(b => b.text() === 'Register')).toBe(false);
+        expect(wrapper.findAll('button').some(b => b.text() === 'Join Waiting List')).toBe(false);
+    });
+
+    it('calls router.delete with the correct URL when Unregister is clicked', async () => {
+        const workshop = makeWorkshop({ id: 5, user_registration: { status: 'confirmed' } });
+        const wrapper = mount(Dashboard, { props: { workshops: [workshop] } });
+
+        await wrapper.find('button').trigger('click');
+
+        expect(mockDelete).toHaveBeenCalledOnce();
+        expect(mockDelete).toHaveBeenCalledWith('/workshops/5/registrations');
+    });
+
+    it('shows Register and Join Waiting List buttons when user_registration is null', () => {
+        const withSeats = mount(Dashboard, {
+            props: { workshops: [makeWorkshop({ user_registration: null, available_seats: 5 })] },
+        });
+        expect(withSeats.findAll('button').some(b => b.text() === 'Register')).toBe(true);
+        expect(withSeats.findAll('button').some(b => b.text() === 'Unregister')).toBe(false);
+
+        const noSeats = mount(Dashboard, {
+            props: { workshops: [makeWorkshop({ user_registration: null, available_seats: 0 })] },
+        });
+        expect(noSeats.findAll('button').some(b => b.text() === 'Join Waiting List')).toBe(true);
+        expect(noSeats.findAll('button').some(b => b.text() === 'Unregister')).toBe(false);
     });
 
     it('uses capacity as fallback for available_seats when null', () => {
