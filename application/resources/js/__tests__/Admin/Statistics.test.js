@@ -72,6 +72,15 @@ describe('Admin/Statistics.vue', () => {
         expect(mocks.mockLeaveChannel).toHaveBeenCalledWith('academy');
     });
 
+    it('does not throw on mount or unmount when window.Echo is not available', () => {
+        vi.unstubAllGlobals();
+
+        const wrapper = mount(Statistics, { props: { total_count: 0, most_popular: null } });
+        wrapper.unmount();
+
+        expect(mocks.mockChannel).not.toHaveBeenCalled();
+    });
+
     it('RegistrationUpdated callback calls router.reload', () => {
         mount(Statistics, { props: { total_count: 0, most_popular: null } });
 

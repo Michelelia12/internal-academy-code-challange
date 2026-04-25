@@ -11,12 +11,14 @@ const props = defineProps({
 });
 
 onMounted(() => {
+    if (!window.Echo) return;
     window.Echo.channel('academy').listen('RegistrationUpdated', () => {
         router.reload({ only: ['most_popular', 'total_count'] });
     });
 });
 
 onUnmounted(() => {
+    if (!window.Echo) return;
     window.Echo.leaveChannel('academy');
 });
 </script>
