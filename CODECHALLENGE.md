@@ -20,36 +20,36 @@ The goal is to develop a web application to manage company workshops and registr
 
 
 # The basic functionalities ("Must Have") are:
-- [ ] **Roles and Authentication**
+- [x] **Roles and Authentication**
 Implement two distinct roles: Admin (HR/Manager) and Employee (Developer/Generic User).
 Users must be able to log in and see different interfaces based on their role.
-- [ ] **Workshop Management (Admin)**
+- [x] **Workshop Management (Admin)**
 The Admin can create, modify, and delete Workshops.
-- [ ] **Each Workshop**
+- [x] **Each Workshop**
 must have:
-- [ ] Title
-- [ ] Description
-- [ ] Date and Time
-- [ ] Maximum Number of Seats (Capacity)
-- [ ] **Registration and Participation (Employee)**
-- [ ] All employees can view the list of future workshops on their dashboard.
-- [ ] An employee can sign up for a workshop with one click, but only if there are still available seats.
-- [ ] An employee can cancel their registration if they change their mind, immediately freeing up the spot for someone else.
+- [x] Title
+- [x] Description
+- [x] Date and Time
+- [x] Maximum Number of Seats (Capacity)
+- [x] **Registration and Participation (Employee)**
+- [x] All employees can view the list of future workshops on their dashboard.
+- [x] An employee can sign up for a workshop with one click, but only if there are still available seats.
+- [x] An employee can cancel their registration if they change their mind, immediately freeing up the spot for someone else.
 
 # Nice to have
 Too easy? Show off your skills
 If the basic requirements seem too simple, here's how you can impress us by managing more realistic scenarios:
-- [ ] **The Waiting List**: If a workshop is full, the user is not rejected but can sign up for the "Waiting List." If a confirmed participant cancels their registration, the first user on the waiting list is automatically promoted to participant (manage FIFO logic).
-- [ ] **No Ubiquity**: Prevent a user from signing up for two workshops that overlap in time. No one can be in two places at once!
-- [ ] **Command Line Reminder**: Create a custom artisan command (e.g., php artisan academy:remind) that, when launched, sends a reminder email to all participants of workshops scheduled for the following day.
+- [x] **The Waiting List**: If a workshop is full, the user is not rejected but can sign up for the "Waiting List." If a confirmed participant cancels their registration, the first user on the waiting list is automatically promoted to participant (manage FIFO logic).
+- [] **No Ubiquity**: Prevent a user from signing up for two workshops that overlap in time. No one can be in two places at once!
+- [x] **Command Line Reminder**: Create a custom artisan command (e.g., php artisan academy:remind) that, when launched, sends a reminder email to all participants of workshops scheduled for the following day.
 
 
 # The Top Player Zone
 If you're here, you really want to raise the bar.
-- [ ] **Statistics Dashboard**:Implement a Statistics Dashboard for the Admin that shows:
-- [ ] The most popular workshop.
-- [ ] The number of registrations in Real Time: if a user signs up, the counter on the admin dashboard must update "magically" without refreshing the page (Websockets / Laravel Reverb / Polling).
-- [ ] Furthermore, ensure the code is rock-solid by writing complete Unit Tests and Feature Tests (Pest or PHPUnit). Without tests, code is just an opinion.
+- [x] **Statistics Dashboard**:Implement a Statistics Dashboard for the Admin that shows:
+- [x] The most popular workshop.
+- [x] The number of registrations in Real Time: if a user signs up, the counter on the admin dashboard must update "magically" without refreshing the page (Websockets / Laravel Reverb / Polling).
+- [x] Furthermore, ensure the code is rock-solid by writing complete Unit Tests and Feature Tests (Pest or PHPUnit). Without tests, code is just an opinion.
 
 # Non-Functional Requirements & Mindset
 You will be working on a complex system, and we want to ensure we share the same mindset. For this reason:

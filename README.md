@@ -420,8 +420,8 @@ All routes use Inertia (server-rendered SPA), not a traditional JSON REST API. T
 | POST   | `/workshops`                         | Create workshop                   | Admin      |
 | PUT    | `/workshops/{workshop}`              | Update workshop                   | Admin      |
 | DELETE | `/workshops/{workshop}`              | Delete workshop                   | Admin      |
-| POST   | `/workshops/{workshop}/register`     | Register (or join waiting list)   | Employee   |
-| DELETE | `/workshops/{workshop}/register`     | Cancel registration               | Employee   |
+| POST   | `/workshops/{workshop}/registrations` | Register (or join waiting list)  | Employee   |
+| DELETE | `/workshops/{workshop}/registrations` | Cancel registration              | Employee   |
 | GET    | `/admin/stats`                       | Statistics dashboard              | Admin      |
 
 ---
