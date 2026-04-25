@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\RegistrationStatus;
 use App\Events\RegistrationUpdated;
+use App\Jobs\PromoteFromWaitingList;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopRegistration;
@@ -64,6 +65,40 @@ class RegistrationController extends Controller
                 ]);
             }
         });
+
+        $confirmedCount = DB::table('registrations')
+            ->where('workshop_id', $workshop->id)
+            ->where('status', RegistrationStatus::Confirmed->value)
+            ->count();
+
+        RegistrationUpdated::dispatch($workshop, $confirmedCount);
+
+        return redirect()->route('dashboard');
+    }
+
+    public function destroy(Request $request, Workshop $workshop): RedirectResponse
+    {
+        $user = $request->user();
+        if (! $user instanceof User) {
+            return redirect()->route('login');
+        }
+
+        /** @var WorkshopRegistration|null $registration */
+        $registration = WorkshopRegistration::query()
+            ->where('user_id', $user->id)
+            ->where('workshop_id', $workshop->id)
+            ->first();
+
+        if ($registration === null) {
+            return redirect()->route('dashboard');
+        }
+
+        $wasConfirmed = $registration->status === RegistrationStatus::Confirmed;
+        $registration->delete();
+
+        if ($wasConfirmed) {
+            PromoteFromWaitingList::dispatch($workshop);
+        }
 
         $confirmedCount = DB::table('registrations')
             ->where('workshop_id', $workshop->id)

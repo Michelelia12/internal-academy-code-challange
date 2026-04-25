@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @property-read User $user
  * @property-read Workshop $workshop
+ * @property RegistrationStatus $status
  */
 #[Fillable(['user_id', 'workshop_id', 'status', 'position'])]
 class WorkshopRegistration extends Model

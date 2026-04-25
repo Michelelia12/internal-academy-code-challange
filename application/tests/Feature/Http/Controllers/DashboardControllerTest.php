@@ -89,6 +89,38 @@ class DashboardControllerTest extends TestCase
     }
 
     #[Test]
+    public function controller_redirects_to_login_when_request_has_no_user(): void
+    {
+        $this->withoutMiddleware()
+            ->get('/dashboard')
+            ->assertRedirect(route('login'));
+    }
+
+    #[Test]
+    public function user_registration_status_is_included_in_response(): void
+    {
+        /** @var User $employee */
+        $employee = User::factory()->employee()->create();
+
+        /** @var Workshop $workshop */
+        $workshop = Workshop::factory()->create([
+            'starts_at' => now()->addDays(7),
+            'ends_at' => now()->addDays(7)->addHours(2),
+        ]);
+
+        WorkshopRegistration::create([
+            'user_id' => $employee->id,
+            'workshop_id' => $workshop->id,
+            'status' => RegistrationStatus::Confirmed,
+            'position' => null,
+        ]);
+
+        $this->actingAs($employee)->get('/dashboard')
+            ->assertStatus(200)
+            ->assertSee('"user_registration":{"status":"confirmed"}', false);
+    }
+
+    #[Test]
     public function available_seats_reflects_confirmed_registrations_in_response(): void
     {
         /** @var User $employee */

@@ -7,22 +7,25 @@ namespace Tests\Feature\Http\Controllers;
 use App\Enums\RegistrationStatus;
 use App\Events\RegistrationUpdated;
 use App\Http\Controllers\RegistrationController;
+use App\Jobs\PromoteFromWaitingList;
 use App\Models\User;
 use App\Models\Workshop;
 use App\Models\WorkshopRegistration;
 use App\Services\OverlapChecker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use Tests\TestCase;
 
 #[CoversClass(RegistrationController::class)]
-#[UsesClass(WorkshopRegistration::class)]
+#[UsesClass(PromoteFromWaitingList::class)]
 #[UsesClass(RegistrationStatus::class)]
 #[UsesClass(RegistrationUpdated::class)]
 #[UsesClass(User::class)]
 #[UsesClass(Workshop::class)]
+#[UsesClass(WorkshopRegistration::class)]
 #[UsesClass(OverlapChecker::class)]
 class RegistrationControllerTest extends TestCase
 {
@@ -150,5 +153,87 @@ class RegistrationControllerTest extends TestCase
             ->post("/workshops/{$workshop->id}/registrations");
 
         $response->assertRedirect(route('login'));
+    }
+
+    #[Test]
+    public function employee_can_cancel_a_confirmed_registration(): void
+    {
+        Queue::fake();
+
+        /** @var User $employee */
+        $employee = User::factory()->employee()->create();
+        /** @var Workshop $workshop */
+        $workshop = Workshop::factory()->create(['capacity' => 5]);
+
+        WorkshopRegistration::create([
+            'user_id' => $employee->id,
+            'workshop_id' => $workshop->id,
+            'status' => RegistrationStatus::Confirmed,
+            'position' => null,
+        ]);
+
+        $this->actingAs($employee)
+            ->delete("/workshops/{$workshop->id}/registrations")
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseMissing('registrations', [
+            'user_id' => $employee->id,
+            'workshop_id' => $workshop->id,
+        ]);
+        Queue::assertPushed(PromoteFromWaitingList::class);
+    }
+
+    #[Test]
+    public function employee_can_cancel_a_waiting_list_registration(): void
+    {
+        Queue::fake();
+
+        /** @var User $employee */
+        $employee = User::factory()->employee()->create();
+        /** @var Workshop $workshop */
+        $workshop = Workshop::factory()->create(['capacity' => 1]);
+
+        WorkshopRegistration::create([
+            'user_id' => $employee->id,
+            'workshop_id' => $workshop->id,
+            'status' => RegistrationStatus::Waiting,
+            'position' => 1,
+        ]);
+
+        $this->actingAs($employee)
+            ->delete("/workshops/{$workshop->id}/registrations")
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseMissing('registrations', [
+            'user_id' => $employee->id,
+            'workshop_id' => $workshop->id,
+        ]);
+        Queue::assertNotPushed(PromoteFromWaitingList::class);
+    }
+
+    #[Test]
+    public function cancel_is_no_op_when_not_registered(): void
+    {
+        /** @var User $employee */
+        $employee = User::factory()->employee()->create();
+        /** @var Workshop $workshop */
+        $workshop = Workshop::factory()->create();
+
+        $this->actingAs($employee)
+            ->delete("/workshops/{$workshop->id}/registrations")
+            ->assertRedirect(route('dashboard'));
+
+        $this->assertDatabaseCount('registrations', 0);
+    }
+
+    #[Test]
+    public function controller_redirects_to_login_when_request_has_no_user_on_destroy(): void
+    {
+        /** @var Workshop $workshop */
+        $workshop = Workshop::factory()->create();
+
+        $this->withoutMiddleware()
+            ->delete("/workshops/{$workshop->id}/registrations")
+            ->assertRedirect(route('login'));
     }
 }

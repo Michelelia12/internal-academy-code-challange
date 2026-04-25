@@ -22,6 +22,10 @@ Route::post('/workshops/{workshop}/registrations', [RegistrationController::clas
     ->middleware('auth')
     ->name('workshops.registrations.store');
 
+Route::delete('/workshops/{workshop}/registrations', [RegistrationController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('workshops.registrations.destroy');
+
 Route::get('/admin/statistics', [StatisticsController::class, 'index'])
     ->middleware('admin')
     ->name('admin.statistics');
