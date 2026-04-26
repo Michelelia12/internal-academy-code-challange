@@ -40,7 +40,7 @@ must have:
 Too easy? Show off your skills
 If the basic requirements seem too simple, here's how you can impress us by managing more realistic scenarios:
 - [x] **The Waiting List**: If a workshop is full, the user is not rejected but can sign up for the "Waiting List." If a confirmed participant cancels their registration, the first user on the waiting list is automatically promoted to participant (manage FIFO logic).
-- [] **No Ubiquity**: Prevent a user from signing up for two workshops that overlap in time. No one can be in two places at once!
+- [x] **No Ubiquity**: Prevent a user from signing up for two workshops that overlap in time. No one can be in two places at once!
 - [x] **Command Line Reminder**: Create a custom artisan command (e.g., php artisan academy:remind) that, when launched, sends a reminder email to all participants of workshops scheduled for the following day.
 
 
