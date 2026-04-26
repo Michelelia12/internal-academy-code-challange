@@ -25,6 +25,15 @@ function register(workshop) {
 function unregister(workshop) {
     router.delete(`/workshops/${workshop.id}/registrations`, { preserveScroll: true });
 }
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function formatDate(value) {
+    const d = new Date(value);
+    const hh = String(d.getUTCHours()).padStart(2, '0');
+    const mm = String(d.getUTCMinutes()).padStart(2, '0');
+    return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}, ${hh}:${mm}`;
+}
 </script>
 
 <template>
@@ -51,11 +60,11 @@ function unregister(workshop) {
                             <div class="mt-3 flex flex-wrap gap-4 text-sm text-gray-500">
                                 <span>
                                     <span class="font-medium text-gray-700">Starts:</span>
-                                    {{ workshop.starts_at }}
+                                    {{ formatDate(workshop.starts_at) }}
                                 </span>
                                 <span>
                                     <span class="font-medium text-gray-700">Ends:</span>
-                                    {{ workshop.ends_at }}
+                                    {{ formatDate(workshop.ends_at) }}
                                 </span>
                                 <span>
                                     <span class="font-medium text-gray-700">Available seats:</span>

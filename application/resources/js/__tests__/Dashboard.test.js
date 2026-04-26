@@ -16,8 +16,8 @@ const makeWorkshop = (overrides = {}) => ({
     id: 1,
     title: 'Vue Fundamentals',
     description: 'Learn Vue 3 from scratch.',
-    starts_at: '2026-05-01',
-    ends_at: '2026-05-02',
+    starts_at: '2026-05-01T09:00:00.000000Z',
+    ends_at: '2026-05-01T11:00:00.000000Z',
     capacity: 10,
     available_seats: 5,
     user_registration: null,
@@ -29,6 +29,12 @@ describe('Dashboard.vue', () => {
         mockPost.mockClear();
         mockDelete.mockClear();
         useToast().hide();
+    });
+
+    it('renders starts_at and ends_at as formatted dates', () => {
+        const wrapper = mount(Dashboard, { props: { workshops: [makeWorkshop()] } });
+        expect(wrapper.text()).toContain('1 May 2026, 09:00');
+        expect(wrapper.text()).toContain('1 May 2026, 11:00');
     });
 
     it('renders workshop titles and descriptions', () => {
