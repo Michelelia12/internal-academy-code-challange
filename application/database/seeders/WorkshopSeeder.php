@@ -40,13 +40,13 @@ class WorkshopSeeder extends Seeder
             }
         }
 
-        // [Reminder QA] One workshop with only charlie registered.
+        // [Waiting List QA] Charlie's Workshop — capacity 1, Charlie is the only confirmed participant.
+        // Register as alice@academy.test → waiting list. Unsubscribe charlie → alice is promoted.
         $date = now()->addMonths(1)->toDateString();
 
-        // Create a workshop for Charlie and register him to it, so we have a known workshop with a known user for Reminder QA testing.
         $charlieWorkshop = Workshop::create([
             'title' => 'Charlie\'s Workshop',
-            'description' => 'In this workshop, Charlie is the only confirmed participant. Used for Reminder QA testing.',
+            'description' => 'Waiting List QA fixture — capacity 1, Charlie is the only confirmed participant. Register as alice to join the waiting list, then unsubscribe Charlie to trigger automatic promotion.',
             'starts_at' => "{$date} 10:00:00",
             'ends_at' => "{$date} 12:00:00",
             'capacity' => 1,
@@ -58,6 +58,27 @@ class WorkshopSeeder extends Seeder
         WorkshopRegistration::create([
             'user_id' => $charlie->id,
             'workshop_id' => $charlieWorkshop->id,
+            'status' => RegistrationStatus::Confirmed,
+            'position' => null,
+        ]);
+
+        // [Reminder QA] Tomorrow's Workshop — alice is confirmed. Run php artisan academy:remind after seeding.
+        $tomorrow = now()->addDay()->toDateString();
+
+        $reminderWorkshop = Workshop::create([
+            'title' => '[Reminder QA] Tomorrow\'s Workshop',
+            'description' => 'Reminder QA fixture — scheduled for tomorrow with Alice confirmed. Run php artisan academy:remind to send the reminder email.',
+            'starts_at' => "{$tomorrow} 14:00:00",
+            'ends_at' => "{$tomorrow} 16:00:00",
+            'capacity' => 10,
+        ]);
+
+        /** @var User $alice */
+        $alice = User::where('email', 'alice@academy.test')->firstOrFail();
+
+        WorkshopRegistration::create([
+            'user_id' => $alice->id,
+            'workshop_id' => $reminderWorkshop->id,
             'status' => RegistrationStatus::Confirmed,
             'position' => null,
         ]);

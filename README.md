@@ -20,6 +20,7 @@
   - [Database Setup \& Seeders](#database-setup--seeders)
   - [Running the Application](#running-the-application)
   - [Running Tests](#running-tests)
+  - [Manual Testing Guide](#manual-testing-guide)
   - [Artisan Commands](#artisan-commands)
     - [`php artisan academy:remind`](#php-artisan-academyremind)
   - [Real-Time Features](#real-time-features)
@@ -313,6 +314,74 @@ The PHP test suite covers:
 - Real-time event broadcasting
 
 > Tests use an in-memory SQLite database (`:memory:`) and do not affect your local data.
+
+---
+
+## Manual Testing Guide
+
+After running `php artisan db:seed`, you can manually verify every feature from the spec using the accounts below (password: `password`):
+
+| Role     | Email                  |
+|----------|------------------------|
+| Admin    | admin@academy.test     |
+| Employee | alice@academy.test     |
+| Employee | bob@academy.test       |
+| Employee | charlie@academy.test   |
+
+### 1. Authentication & Roles
+1. Log in as `admin@academy.test` → you land on the **Admin dashboard** (workshop management + statistics).
+2. Log out, log in as `alice@academy.test` → you land on the **Employee dashboard** (upcoming workshops list).
+
+### 2. Workshop Management (Admin)
+1. Log in as `admin@academy.test`.
+2. Create a new workshop — fill in title, description, date/time, and capacity.
+3. Edit the workshop and change the title.
+4. Delete the workshop — it disappears from both the admin and employee views.
+
+### 3. Registration & Cancellation (Employee)
+1. Log in as `alice@academy.test`.
+2. Register for any workshop that still has available seats — the button changes to **Cancel**.
+3. Cancel the registration — the seat is freed and the button reverts to **Register**.
+
+### 4. Waiting List
+The seeder creates **Charlie's Workshop** (capacity 1, Charlie is the only confirmed participant).
+
+1. Log in as `alice@academy.test` (or `admin@academy.test`) and register for **Charlie's Workshop** → status shows **Waiting** (workshop is full).
+2. Log out and log in as `charlie@academy.test`.
+3. Cancel Charlie's registration.
+4. Log back in as `alice@academy.test` → status is now **Confirmed** (automatic FIFO promotion).
+
+### 5. Overlap Detection
+The seeder pre-registers **charlie@academy.test** for **[Overlap QA] Session A** (09:00–11:00).
+
+1. Log in as `charlie@academy.test`.
+2. Try to register for **[Overlap QA] Session B** (10:00–12:00, overlaps by 1 hour).
+3. A toast notification appears: *"You are already registered for an overlapping workshop."*
+
+### 6. Statistics Dashboard & Real-Time Counter
+Requires Reverb running (see [Real-Time Features](#real-time-features)).
+
+1. Open the admin dashboard (`admin@academy.test`) in one browser tab.
+2. Open the employee dashboard (`alice@academy.test`) in a second tab.
+3. Register for a workshop as Alice → the registration counter on the admin dashboard increments **without a page refresh**.
+
+### 7. Command Line Reminder (`academy:remind`)
+The seeder creates **[Reminder QA] Tomorrow's Workshop** scheduled for tomorrow with `alice@academy.test` confirmed. No extra setup needed.
+
+**Run the command:**
+```bash
+php artisan academy:remind
+```
+
+**Verify the email:**
+
+With the default `MAIL_MAILER=log`, the email is appended to `storage/logs/laravel.log`:
+```bash
+grep -A 20 "WorkshopReminder" application/storage/logs/laravel.log | tail -20
+```
+You should see an entry addressed to `alice@academy.test` for **[Reminder QA] Tomorrow's Workshop**.
+
+> To inspect the email in a real inbox, point `.env` at [Mailpit](https://mailpit.axllent.org): set `MAIL_MAILER=smtp`, `MAIL_HOST=localhost`, `MAIL_PORT=1025`, and open `http://localhost:8025`.
 
 ---
 
