@@ -40,8 +40,27 @@ class WorkshopSeeder extends Seeder
             }
         }
 
-        // 7 empty upcoming workshops with random capacity
-        Workshop::factory()->count(7)->create();
+        // [Reminder QA] One workshop with only charlie registered.
+        $date = now()->addMonths(1)->toDateString();
+
+        // Create a workshop for Charlie and register him to it, so we have a known workshop with a known user for Reminder QA testing.
+        $charlieWorkshop = Workshop::create([
+            'title' => 'Charlie\'s Workshop',
+            'description' => 'In this workshop, Charlie is the only confirmed participant. Used for Reminder QA testing.',
+            'starts_at' => "{$date} 10:00:00",
+            'ends_at' => "{$date} 12:00:00",
+            'capacity' => 1,
+        ]);
+
+        /** @var User $charlie */
+        $charlie = User::where('email', 'charlie@academy.test')->firstOrFail();
+
+        WorkshopRegistration::create([
+            'user_id' => $charlie->id,
+            'workshop_id' => $charlieWorkshop->id,
+            'status' => RegistrationStatus::Confirmed,
+            'position' => null,
+        ]);
 
         // [Overlap QA] Two workshops that intentionally overlap in time.
         // Session A 09:00–11:00, Session B 10:00–12:00 (1-hour overlap).
